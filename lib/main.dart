@@ -1,4 +1,5 @@
 import 'package:alarm/design.dart';
+import 'package:alarm/splassh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
@@ -10,10 +11,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  
+  Widget build(BuildContext context ) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Mp3Page(),
+      home: SplashScreen(),
+      
     );
   }
 }
