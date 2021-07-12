@@ -17,13 +17,16 @@ class Mp3Page extends StatefulWidget {
 class _Mp3PageState extends State<Mp3Page> {
   AudioPlayer _player;
   ReceivePort _port = ReceivePort();
-  ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(
-      children: List.generate(
-    mp3FilesName['audios'].length,
-    (index) => AudioSource.uri(Uri.parse(mp3FilesName['audios'][index]
-        // audio[index],
-        )),
-  ));
+
+  ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: [
+  AudioSource.uri(Uri.parse('https://example.com/track1.mp3')),
+  AudioSource.uri(Uri.parse('https://example.com/track2.mp3')),
+  AudioSource.uri(Uri.parse('https://example.com/track3.mp3')),
+  AudioSource.uri(Uri.parse('https://example.com/track4.mp3')),
+  AudioSource.uri(Uri.parse('https://example.com/track5.mp3')),
+  ]
+    
+    );
 
   // ignore: unused_field
   int _addedCount = 0;
@@ -77,44 +80,50 @@ class _Mp3PageState extends State<Mp3Page> {
         child: Column(children: [
           Expanded(
             child: ListView.builder(
-              itemCount: mp3FilesName[1],
+              itemCount: 2,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 250,
-                  child: StreamBuilder<SequenceState>(
-                    stream: _player.sequenceStateStream,
-                    builder: (context, snapshot) {
-                      final state = snapshot.data;
-                      final sequence = state?.sequence ?? [];
-                      return ReorderableListView(
-                        onReorder: (int oldIndex, int newIndex) {
-                          if (oldIndex < newIndex) newIndex--;
-                          _playlist.move(oldIndex, newIndex);
-                        },
-                        children: [
-                          for (var i = 0; i < sequence.length; i++)
-                            Dismissible(
-                              key: ValueKey(sequence[i]),
-                              onDismissed: (dismissDirection) {
-                                _playlist.removeAt(i);
-                              },
-                              child: Material(
-                                color: i == state.currentIndex
-                                    ? Colors.grey.shade300
-                                    : null,
-                                child: ListTile(
-                                  title: Text(mp3FilesName['titles'][index]),
-                                  onTap: () {
-                                    _player.seek(Duration.zero, index: i);
-                                  },
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
+                return ListTile(
+                  onTap: () {
+                    // _player.seek(Duration.zero, index: i);
+                  },
+                  title: Text('audio'),
                 );
+                // Container(
+                //   height: 250,
+                //   child: StreamBuilder<SequenceState>(
+                //     stream: _player.sequenceStateStream,
+                //     builder: (context, snapshot) {
+                //       final state = snapshot.data;
+                //       final sequence = state?.sequence ?? [];
+                //       return ReorderableListView(
+                //         onReorder: (int oldIndex, int newIndex) {
+                //           if (oldIndex < newIndex) newIndex--;
+                //           _playlist.move(oldIndex, newIndex);
+                //         },
+                //         children: [
+                //           for (var i = 0; i < sequence.length; i++)
+                //             Dismissible(
+                //               key: ValueKey(sequence[i]),
+                //               onDismissed: (dismissDirection) {
+                //                 _playlist.removeAt(i);
+                //               },
+                //               child: Material(
+                //                 color: i == state.currentIndex
+                //                     ? Colors.grey.shade300
+                //                     : null,
+                //                 child: ListTile(
+                //                   title: Text(mp3FilesName['titles'][index]),
+                //                   onTap: () {
+                //                     _player.seek(Duration.zero, index: i);
+                //                   },
+                //                 ),
+                //               ),
+                //             ),
+                //         ],
+                //       );
+                //     },
+                //   ),
+                // );
               },
             ),
           ),
@@ -218,181 +227,3 @@ class _Mp3PageState extends State<Mp3Page> {
   }
 }
 
-Map<String, dynamic> mp3FilesName = {
-  'audios': [
-    'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-    'https://drive.google.com/uc?export=vw&id=11aylWzJC8_IWksadcrcX6Px',
-    'https://drive.google.com/uc?expor&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-    'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-  ],
-  'titles': [
-    'ahmed',
-    'sds',
-    'ah',
-    'mohamed',
-  ]
-};
-
-/*
- GestureDetector(
-                              onLongPress: () async {
-                                final appPath =
-                                    await getApplicationDocumentsDirectory();
-
-                                final path = Directory(appPath.path + '/alarm');
-                                await Permission.storage.request();
-                                // var path = Directory('storage/emulated/0/quraan');
-                                if (await path.exists() == false) {
-                                  path.create();
-                                }
-                                await FlutterDownloader.enqueue(
-                                  url:
-                                      'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-                                  savedDir: path.path,
-                                  // savedDir: 'Locations/On  My iPhone//',
-                                  showNotification: true,
-                                  openFileFromNotification: false,
-                                ).then((value) {
-                                  Fluttertoast.showToast(
-                                    msg: 'جاري التحميل',
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.SNACKBAR,
-                                    backgroundColor: Colors.blueGrey,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0,
-                                  );
-                                });
-                              },
-                              child: ListTile(
-                                title: Text("mp3FilesName['titles']"),
-                                onTap: () {
-                                  _player.seek(Duration.zero, index: i);
-                                },
-                              ),
-                            ),
-*/
-/*
-  ControlButtons(_player),
-            StreamBuilder<Duration>(
-              stream: _player.durationStream,
-              builder: (context, snapshot) {
-                final duration = snapshot.data ?? Duration.zero;
-                return StreamBuilder<PositionData>(
-                  stream: Rx.combineLatest2<Duration, Duration, PositionData>(
-                      _player.positionStream,
-                      _player.bufferedPositionStream,
-                      (position, bufferedPosition) =>
-                          PositionData(position, bufferedPosition)),
-                  builder: (context, snapshot) {
-                    final positionData = snapshot.data ??
-                        PositionData(Duration.zero, Duration.zero);
-                    var position = positionData.position ?? Duration.zero;
-                    if (position > duration) {
-                      position = duration;
-                    }
-                    var bufferedPosition =
-                        positionData.bufferedPosition ?? Duration.zero;
-                    if (bufferedPosition > duration) {
-                      bufferedPosition = duration;
-                    }
-                    return SeekBar(
-                      duration: duration,
-                      position: position,
-                      bufferedPosition: bufferedPosition,
-                      onChangeEnd: (newPosition) {
-                        _player.seek(newPosition);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-            SizedBox(height: 8.0),
-            Row(
-              children: [
-                StreamBuilder<LoopMode>(
-                  stream: _player.loopModeStream,
-                  builder: (context, snapshot) {
-                    final loopMode = snapshot.data ?? LoopMode.off;
-                    const icons = [
-                      Icon(Icons.repeat, color: Colors.grey),
-                      Icon(Icons.repeat, color: Colors.orange),
-                      Icon(Icons.repeat_one, color: Colors.orange),
-                    ];
-                    const cycleModes = [
-                      LoopMode.off,
-                      LoopMode.all,
-                      LoopMode.one,
-                    ];
-                    final index = cycleModes.indexOf(loopMode);
-                    return IconButton(
-                      icon: icons[index],
-                      onPressed: () {
-                        _player.setLoopMode(cycleModes[
-                            (cycleModes.indexOf(loopMode) + 1) %
-                                cycleModes.length]);
-                      },
-                    );
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    "Playlist",
-                    style: Theme.of(context).textTheme.headline6,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                StreamBuilder<bool>(
-                  stream: _player.shuffleModeEnabledStream,
-                  builder: (context, snapshot) {
-                    final shuffleModeEnabled = snapshot.data ?? false;
-                    return IconButton(
-                      icon: shuffleModeEnabled
-                          ? Icon(Icons.shuffle, color: Colors.orange)
-                          : Icon(Icons.shuffle, color: Colors.grey),
-                      onPressed: () async {
-                        final enable = !shuffleModeEnabled;
-                        if (enable) {
-                          await _player.shuffle();
-                        }
-                        await _player.setShuffleModeEnabled(enable);
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-  
-*/
-// String imgUrl = "https://drive.google.com/file/d/$fileId/view";
-
-// downloadFile(String url) async {
-//   await Permission.storage.request();
-//   var appPath = await getTemporaryDirectory();
-//   var path = Directory('storage/emulated/0/alarm');
-
-//   if (await path.exists() == true) {
-//   } else {
-//     await path.create(recursive: true);
-//   }
-//   final taskId = await FlutterDownloader.enqueue(
-//     url: url,
-//     savedDir: 'storage/emulated/0/alarm',
-//     showNotification: true,
-//     openFileFromNotification: true,
-//   );
-// }
-
-// File checkIfExist(String url) {
-//   final fileName = url.substring(url.lastIndexOf('/') + 1);
-//   var path = Directory('storage/emulated/0/alarm/');
-//   String pathFile = path.path + fileName;
-//   return File(pathFile);
-// }
-
-// List audio = [
-//   'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-//   'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-//   'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-//   'https://drive.google.com/uc?export=view&id=11aylWzziqph_iXBJC8_IWksadcrcX6Px',
-// ];

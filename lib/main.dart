@@ -1,4 +1,3 @@
-import 'package:alarm/design.dart';
 import 'package:alarm/splassh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
